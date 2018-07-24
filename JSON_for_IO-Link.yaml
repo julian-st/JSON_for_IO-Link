@@ -617,6 +617,8 @@ components:
     mqttConfigurationGetPost:
       type: object
       properties:
+        enablePublishing:
+          type: boolean
         brokerAddress:
           type: string
         username:
