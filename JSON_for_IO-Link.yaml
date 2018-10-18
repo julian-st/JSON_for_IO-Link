@@ -23,9 +23,11 @@ info:
 
     ### Process Data handling
 
-    * [5] Writing processdata to Pin 2 is not possible. Pin 2 is not configured as DIGITAL_OUTPUT.
+    * [5] Writing processdata to Pin 2 is not possible. Pin 2 is not configured
+    as DIGITAL_OUTPUT.
 
-    * [6] Writing processdata to Pin 4 is not possible. Pin 4 is not configured as DIGITAL_OUTPUT.
+    * [6] Writing processdata to Pin 4 is not possible. Pin 4 is not configured
+    as DIGITAL_OUTPUT.
 
     * [7] Attached IO-Link device has no output process data.
 
@@ -35,7 +37,8 @@ info:
 
     ### Data Storage
 
-    * [9] HTTP Status 400: Mismatch between configured device and data storage meta data.
+    * [9] HTTP Status 400: Mismatch between configured device and data storage
+    meta data.
 
     ### General
 
@@ -45,8 +48,9 @@ info:
 
     ### Implementation hint:
 
-    Specific error messages have to be provided only if the corresponding operation is supported. So you do not need to give specific errors for bad IODDs, just indicate error 10.
-
+    Specific error messages have to be provided only if the corresponding
+    operation is supported. So you do not need to give specific errors for bad
+    IODDs, just indicate error 10.
   version: 0.0.3
   title: Swagger IO-Link Master
   contact:
@@ -64,6 +68,8 @@ tags:
     description: Access to parameters of the IO-Link master itself
   - name: ports
     description: Access to the IO-Link ports of the IO-Link master
+  - name: device
+    description: Access to the IO-Link device of an IO-Link port
   - name: connections
     description: 'Access to several connections like MQTT, ...'
 paths:
@@ -266,10 +272,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/portStatusGet'
-  '/ports/{portId}/identification':
+  '/ports/{portId}/device/identification':
     get:
       tags:
-        - ports
+        - device
       summary: Read the identification of the device at the specified port
       description: >-
         *Implementation hint*: You have to request the ISDU values of
@@ -286,7 +292,7 @@ paths:
                 $ref: '#/components/schemas/portIdentificationGet'
     post:
       tags:
-        - ports
+        - device
       summary: Write application specific port identification
       parameters:
         - $ref: '#/components/parameters/portId'
@@ -342,10 +348,10 @@ paths:
       responses:
         '200':
           description: Successful operation
-  '/ports/{portId}/processdata/value':
+  '/ports/{portId}/device/processdata/value':
     get:
       tags:
-        - ports
+        - device
       summary: Read the process data of the specified port
       parameters:
         - $ref: '#/components/parameters/portId'
@@ -357,10 +363,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/portProcessDataValueGet'
-  '/ports/{portId}/parameters/{index}/value':
+  '/ports/{portId}/device/parameters/{index}/value':
     get:
       tags:
-        - ports
+        - device
       summary: Read the parameter with the given index from the specified port
       parameters:
         - $ref: '#/components/parameters/portId'
@@ -373,10 +379,25 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/portParameterIndexValueGet'
-  '/ports/{portId}/parameters/{index}/{subindex}/value':
+  '/ports/{portId}/device/parameters/{index}/list':
     get:
       tags:
-        - ports
+        - device
+      summary: List the subindices of the parameter with given index from the specified port
+      parameters:
+        - $ref: '#/components/parameters/portId'
+        - $ref: '#/components/parameters/index'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/portParameterIndexListGet'
+  '/ports/{portId}/device/parameters/{index}/{subindex}/value':
+    get:
+      tags:
+        - device
       summary: >-
         Read the parameter with the given index and subindex from the specified
         port
@@ -938,13 +959,13 @@ components:
             pin2Value:
               type: array
               items:
-                type: number
+                type: integer
                 minimum: 0
                 maximum: 255
             data:
               type: array
               items:
-                type: number
+                type: integer
                 minimum: 0
                 maximum: 255
             valid:
@@ -957,13 +978,13 @@ components:
             pin2Value:
               type: array
               items:
-                type: number
+                type: integer
                 minimum: 0
                 maximum: 255
             data:
               type: array
               items:
-                type: number
+                type: integer
                 minimum: 0
                 maximum: 255
             valid:
@@ -985,19 +1006,38 @@ components:
         data:
           type: array
           items:
-            type: number
+            type: integer
             minimum: 0
             maximum: 255
       example:
-        Pressure: 123
-        Temperature: 10
+        data:
+          - 0
+          - 40
+          - 255
+          - 5
+    portParameterIndexListGet:
+      type: array
+      items:
+        type: object
+        properties:
+          subindex:
+            type: integer
+            minimum: 0
+            maximum: 255
+          name:
+            type: string
+      example:
+          - index: 0
+            name: DirectParameterPage1
+          - index: 1
+            name: DirectParameterPage2
     portParameterSubindexValueGet:
       type: object
       properties:
         data:
           type: array
           items:
-            type: number
+            type: integer
             minimum: 0
             maximum: 255
       example:
@@ -1007,9 +1047,9 @@ components:
       type: object
       properties:
         vendorId:
-          type: number
+          type: integer
         deviceId:
-          type: number
+          type: integer
         version:
           type: string
         releaseDate:
