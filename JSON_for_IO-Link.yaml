@@ -363,6 +363,20 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/portProcessDataValueGet'
+  '/ports/{portId}/device/parameters/list':
+    get:
+      tags:
+        - device
+      summary: List all available indices of the IO-Link device connected to the specified port
+      parameters:
+        - $ref: '#/components/parameters/portId'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/portParameterListGet'
   '/ports/{portId}/device/parameters/{index}/value':
     get:
       tags:
@@ -1015,6 +1029,22 @@ components:
           - 40
           - 255
           - 5
+    portParameterListGet:
+      type: array
+      items:
+        type: object
+        properties:
+          index:
+            type: integer
+            minimum: 0
+            maximum: 255
+          name:
+            type: string
+      example:
+          - index: 0
+            name: DirectParameterPage1
+          - index: 1
+            name: DirectParameterPage2
     portParameterIndexListGet:
       type: array
       items:
@@ -1027,10 +1057,10 @@ components:
           name:
             type: string
       example:
-          - index: 0
-            name: DirectParameterPage1
-          - index: 1
-            name: DirectParameterPage2
+          - subindex: 1
+            name: TheNameOfTheFirstSubIndexItem
+          - subindex: 2
+            name: TheNameOfTheSecondSubIndexItem
     portParameterSubindexValueGet:
       type: object
       properties:
