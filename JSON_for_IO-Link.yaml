@@ -47,7 +47,7 @@ info:
 
     Specific error messages have to be provided only if the corresponding operation is supported. So you do not need to give specific errors for bad IODDs, just indicate error 10.
 
-  version: 0.0.3
+  version: 0.0.3.1
   title: Swagger IO-Link Master
   contact:
     email: oliver.lingg@sick.de
@@ -591,12 +591,15 @@ components:
           type: array
           items:
             type: object
+            required: [ ipAddress, subnetMask]
             properties:
               ipAddress:
                 type: string
               subnetMask:
                 type: string
               standardGateway:
+                type: string
+              mode:
                 type: string
         ethIpv6:
           type: array
