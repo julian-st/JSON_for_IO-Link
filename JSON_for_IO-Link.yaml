@@ -2704,7 +2704,7 @@ paths:
                   - msgCode: 311
                     message: IO-Link parameter access error 
                   - msgCode: 601
-                    message: IODD is not availabl
+                    message: IODD is not available
                   - msgCode: 703
                     message: Incompatible data set combination, the whole data set is rejected
         '403':
